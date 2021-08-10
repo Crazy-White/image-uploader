@@ -1,6 +1,7 @@
 const fs = require("fs");
 const fetch = require("node-fetch");
 const FormData = require("form-data");
+const path = require("path");
 const args = process.argv.slice(2);
 
 function die(msg) {
@@ -40,10 +41,13 @@ if (args.length === 0) {
 Arguments are required`);
 }
 
-if (!args.every((path) => fs.existsSync(path)))
-    die(`Upload Fail:
-Files are not exists
+args.forEach((path) => {
+    if (!fs.existsSync(path)) {
+        die(`Upload Fail:
+File above does not exist
 ${path}`);
+    }
+});
 
 const remoteURLs = [];
 
