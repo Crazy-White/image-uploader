@@ -1,19 +1,19 @@
 const { sendPost } = require("./func");
 
-// https://sm.ms
+// https://imgkr.com/
 
 async function getRemoteURL(path, target) {
     const response = await sendPost(
-        "https://sm.ms/api/v2/upload/",
-        "smfile",
+        "https://imgkr.com/api/v2/files/upload",
+        "file",
         path,
         {
-            Authorization: "qk0WHwBx9NOcUWyMgqMo7o6YoMRAGHTX",
+            Referer: "https://imgkr.com/",
         }
     );
     if (!response.success) throw new Error(response.message);
-    target.push(response.data.url);
-    return response.data.url;
+    target.push(response.data);
+    return response.data;
 }
 
 module.exports = getRemoteURL;

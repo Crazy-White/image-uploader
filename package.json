@@ -5,7 +5,10 @@
   "scripts": {
     "test": "node index.js"
   },
-  "author": "",
+  "bin": {
+    "uploadimg": "./index.js"
+  },
+  "author": "CrazyWhite",
   "license": "ISC",
   "dependencies": {
     "form-data": "^4.0.0",

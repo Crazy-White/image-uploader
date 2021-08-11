@@ -5,5 +5,11 @@
 # Usage
 
 ```sh
-node index.js ./wallpaper.jpg
+node image-uploader/index.js ./wallpaper.jpg
+```
+
+or install it globally
+```sh
+npm install ./image-uploader -g
+uploadimg ./wallpaper.jpg
 ```

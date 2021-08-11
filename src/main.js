@@ -1,13 +1,61 @@
 const fs = require("fs");
 
+/* 解析命令行参数 */
 const commandArgs = process.argv.slice(2);
 const commandFlags = commandArgs.filter((str) => str.startsWith("-"));
 const commandPaths = commandArgs.filter((str) => !str.startsWith("-"));
 
 const { die } = require("./func");
 
+function showHelp(help) {
+    die(
+        "Usage: uploadimg [options...] <path>",
+        ...[
+            "    --list    show servers avaliable",
+            "    --server=<server>    select server",
+            help
+                ? "" +
+                  "\ne.g. uploadimg test.png --server=smms" +
+                  "\ne.g. uploadimg --server=smms ./test.png" +
+                  "\ne.g. uploadimg 1.jpg 2.jpg [3.jpg] [4.jpg] [...]" +
+                  "\n execute 'uploadimg --list' to check servers avaliable"
+                : "    --help   show help",
+        ]
+    );
+}
+if (commandArgs.length === 0) {
+    showHelp();
+}
+
+if (commandFlags.find((str) => str === "--help")) {
+    showHelp(1);
+}
+
+if (commandFlags.find((str) => str === "--list")) {
+    die(
+        "Servers",
+        ...[
+            "    add --server=<name> to select the server",
+            "    e.g. uploadimg test.png --server=smms",
+            "",
+            "kieng    equal to kieng.jd",
+            "smms",
+            "imgkr",
+            "kieng.jd",
+            "kieng.sg",
+            "kieng.c58",
+            "kieng.wy",
+            "kieng.hl",
+            "kieng.tt",
+            "kieng.qq",
+            "kieng.kefu",
+            "kieng.sh",
+        ]
+    );
+}
+
 if (commandPaths.length === 0) {
-    die("Upload Fail", "Arguments are required");
+    showHelp();
 }
 
 commandPaths.forEach((path) => {
@@ -16,7 +64,7 @@ commandPaths.forEach((path) => {
     }
 });
 
-const remoteURLs = [];
+/* 选择目标服务器 */
 let server = "kieng.jd"; //default value
 
 (() => {
@@ -38,15 +86,18 @@ if (server.startsWith("kieng.")) {
             throw err;
         }
     };
-} else if (server === "kieng") {
-    getRemoteURL = require("./kieng");
-} else if (server === "smms") {
-    getRemoteURL = require("./smms");
+} else if (["main", "func"].includes(server)) {
+    //exclude files
+    die("Server does not exists", server);
+} else if (fs.existsSync(__dirname + `/${server}.js`)) {
+    getRemoteURL = require(`./${server}`);
 } else {
     //default
     die("Server does not exists", server);
 }
 
+/* 发送请求 */
+const remoteURLs = [];
 Promise.all(commandPaths.map((path) => getRemoteURL(path, remoteURLs)))
     .then(() => {
         die("Upload Success", ...remoteURLs);
@@ -54,19 +105,3 @@ Promise.all(commandPaths.map((path) => getRemoteURL(path, remoteURLs)))
     .catch((err) => {
         die("Upload Fail", err);
     });
-
-// die(`Upload Success:
-// http://remote-image-1.png
-// http://remote-image-2.png`);
-
-/* How To Use */
-// node index.js C:\Users\Admin\Pictures\wallpaper.jpg
-// node index.js C:\Users\Admin\Pictures\wallpaper.jpg --server=smms
-// node index.js C:\Users\Admin\Pictures\wallpaper.jpg --server=kieng
-// node index.js C:\Users\Admin\Pictures\wallpaper.jpg --server=kieng.[jd,sg,c58,wy,hl,tt,qq,kequ,sh]
-
-/* multi-files are supported */
-// node index.js C:\Users\Admin\Pictures\wallpaper.jpg C:\Users\Admin\Pictures\wallpaper2.jpg  --server=kieng.qq
-
-/* flags starts with '--' can be anywhere */
-// node index.js C:\Users\Admin\Pictures\wallpaper.jpg --server=kieng C:\Users\Admin\Pictures\wallpaper2.jpg
