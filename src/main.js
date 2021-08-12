@@ -5,36 +5,41 @@ const fg = require("fast-glob");
 const commandArgs = process.argv.slice(2);
 const commandFlags = commandArgs.filter((str) => str.startsWith("-"));
 const commandPaths = commandArgs.filter((str) => !str.startsWith("-"));
+//console.log(commandArgs, commandFlags, commandPaths);
 
 const { die } = require("./func");
 
 function showHelp(help) {
-    die(
-        "Usage: uploadimg [options...] <path>",
-        ...[
-            "    --list               show servers avaliable",
-            "    --server=<server>    select server",
-            "    --sen=[true|false]   whether enables a case-sensitive mode for matching files",
-            help
-                ? "" +
-                  "\ne.g. uploadimg test.png --server=smms" +
-                  "\ne.g. uploadimg --server=smms ./test.png" +
-                  "\ne.g. uploadimg 1.jpg 2.jpg [3.jpg] [4.jpg] [...]" +
-                  "\ne.g. uploadimg id-*.jpg --sen=false" +
-                  "\n execute 'uploadimg --list' to check servers avaliable"
-                : "    --help               show help",
-        ]
-    );
+    if (commandPaths.length === 0) {
+        die(
+            "Usage: uploadimg [options...] <path>",
+            ...[
+                "    --list               show servers avaliable",
+                "    --server=<server>    select server",
+                "    --sen=[true|false]   whether enables a case-sensitive mode for matching files",
+                help
+                    ? "" +
+                      "\ne.g. uploadimg test.png --server=smms" +
+                      "\ne.g. uploadimg --server=smms ./test.png" +
+                      "\ne.g. uploadimg 1.jpg 2.jpg [3.jpg] [4.jpg] [...]" +
+                      "\ne.g. uploadimg id-*.jpg --sen=false" +
+                      "\n execute 'uploadimg --list' to check servers avaliable"
+                    : "    --help               show help",
+            ]
+        );
+    } else {
+        die("Upload fail", "Please check your command");
+    }
 }
 if (commandArgs.length === 0) {
     showHelp();
 }
 
-if (commandFlags.find((str) => str === "--help")) {
+if (commandFlags.find((str) => str === "--help" || str === "-H")) {
     showHelp(1);
 }
 
-if (commandFlags.find((str) => str === "--list")) {
+if (commandFlags.find((str) => str === "--list" || str === "-L")) {
     die(
         "Servers",
         ...[
@@ -81,6 +86,8 @@ const filePaths = fg.sync(commandPaths, {
     caseSensitiveMatch,
 });
 
+//console.log(filePaths);
+
 if (filePaths.length === 0) {
     die("Upload Fail", "No matched File");
 }
@@ -119,7 +126,7 @@ if (server.startsWith("kieng.")) {
 
 /* 发送请求 */
 const remoteURLs = [];
-Promise.all(commandPaths.map((path) => getRemoteURL(path, remoteURLs)))
+Promise.all(filePaths.map((path) => getRemoteURL(path, remoteURLs)))
     .then(() => {
         die("Upload Success", ...remoteURLs);
     })
