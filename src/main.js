@@ -1,4 +1,5 @@
 const fs = require("fs");
+const fg = require("fast-glob");
 
 /* 解析命令行参数 */
 const commandArgs = process.argv.slice(2);
@@ -11,15 +12,17 @@ function showHelp(help) {
     die(
         "Usage: uploadimg [options...] <path>",
         ...[
-            "    --list    show servers avaliable",
+            "    --list               show servers avaliable",
             "    --server=<server>    select server",
+            "    --sen=[true|false]   whether enables a case-sensitive mode for matching files",
             help
                 ? "" +
                   "\ne.g. uploadimg test.png --server=smms" +
                   "\ne.g. uploadimg --server=smms ./test.png" +
                   "\ne.g. uploadimg 1.jpg 2.jpg [3.jpg] [4.jpg] [...]" +
+                  "\ne.g. uploadimg id-*.jpg --sen=false" +
                   "\n execute 'uploadimg --list' to check servers avaliable"
-                : "    --help   show help",
+                : "    --help               show help",
         ]
     );
 }
@@ -40,32 +43,50 @@ if (commandFlags.find((str) => str === "--list")) {
             "",
             "kieng    equal to kieng.jd",
             "smms",
+            "vgy",
+            "uploadcc",
             "imgkr",
-            "kieng.jd",
-            "kieng.sg",
-            "kieng.c58",
-            "kieng.wy",
-            "kieng.hl",
-            "kieng.tt",
-            "kieng.qq",
-            "kieng.kefu",
-            "kieng.sh",
+            "kieng.[jd|sg|c58|wy|hl|tt|qq|kequ|sh]",
         ]
     );
 }
+
+let caseSensitiveMatch = true; // defaultValue
+(() => {
+    let flag = commandFlags.find((str) => str.startsWith("--sen="));
+    if (flag) {
+        let parameter = "true";
+        parameter = flag.replace("--sen=", "");
+        if (parameter === "1" || parameter === "true") {
+            caseSensitiveMatch = true;
+            return;
+        }
+        if (parameter === "0" || parameter === "false") {
+            caseSensitiveMatch = false;
+            return;
+        }
+        die("Wrong parameter", parameter);
+    }
+})();
 
 if (commandPaths.length === 0) {
     showHelp();
 }
 
-commandPaths.forEach((path) => {
-    if (!fs.existsSync(path)) {
-        die("Upload Fail", "File above does not exist", path);
-    }
+const filePaths = fg.sync(commandPaths, {
+    onlyFiles: true,
+    unique: true,
+    absolute: true,
+    dot: true,
+    caseSensitiveMatch,
 });
 
+if (filePaths.length === 0) {
+    die("Upload Fail", "No matched File");
+}
+
 /* 选择目标服务器 */
-let server = "kieng.jd"; //default value
+let server = "kieng.jd"; // default value
 
 (() => {
     let flag = commandFlags.find((str) => str.startsWith("--server="));

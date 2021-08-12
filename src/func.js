@@ -14,11 +14,12 @@ function checkPlatform() {
     else return 0;
 }
 
-async function sendPost(url, formName, localPath, headers = {}) {
+async function sendPost(url, formName, localPath, headers = {}, cb) {
     // 模拟POST请求
     try {
         const formData = new FormData();
         formData.append(formName, fs.createReadStream(localPath));
+        if (typeof cb === "function") cb(formData);
         const resp = await fetch(url, {
             method: "POST",
             headers,
