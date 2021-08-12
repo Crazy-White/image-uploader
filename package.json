@@ -1,5 +1,5 @@
 {
-  "name": "image-uploader",
+  "name": "upload-my-image",
   "version": "0.1.0",
   "main": "index.js",
   "scripts": {
@@ -18,11 +18,11 @@
   "devDependencies": {},
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Crazy-White/image-uploader.git"
+    "url": "git+https://github.com/Crazy-White/upload-my-image.git"
   },
   "bugs": {
-    "url": "https://github.com/Crazy-White/image-uploader/issues"
+    "url": "https://github.com/Crazy-White/upload-my-image/issues"
   },
-  "homepage": "https://github.com/Crazy-White/image-uploader#readme",
+  "homepage": "https://github.com/Crazy-White/upload-my-image#readme",
   "description": ""
 }

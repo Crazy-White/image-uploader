@@ -1,15 +1,15 @@
-# image-uploader
+# upload-my-image
 
 能在 Typora 使用的命令行小工具
 
 # Usage
 
 ```sh
-node image-uploader/index.js ./wallpaper.jpg
+node upload-my-image/index.js ./wallpaper.jpg
 ```
 
 or install it globally
 ```sh
-npm install ./image-uploader -g
+npm install upload-my-image -g
 uploadimg ./wallpaper.jpg
 ```
