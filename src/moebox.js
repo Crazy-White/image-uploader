@@ -1,5 +1,7 @@
 const { sendPost } = require("./func");
 
+// https://catbox.moe/
+
 async function getRemoteURL(path, target) {
     const response = await sendPost(
         "https://catbox.moe/user/api.php",

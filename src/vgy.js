@@ -1,5 +1,5 @@
 const { sendPost } = require("./func");
-
+const token = "a5dT4k2QVgWxaT7UCM1TgI16OpBv37mk";
 // Get userkey from https://vgy.me/account/details
 
 async function getRemoteURL(path, target) {
@@ -8,7 +8,7 @@ async function getRemoteURL(path, target) {
         "file",
         path,
         {},
-        (form) => form.append("userkey", "a5dT4k2QVgWxaT7UCM1TgI16OpBv37mk")
+        (form) => form.append("userkey", token)
     );
     if (response.error) throw new Error(JSON.stringify(response));
     target.push(response.image);

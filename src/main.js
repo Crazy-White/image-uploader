@@ -5,7 +5,7 @@ const fg = require("fast-glob");
 const commandArgs = process.argv.slice(2);
 const commandFlags = commandArgs.filter((str) => str.startsWith("-"));
 const commandPaths = commandArgs.filter((str) => !str.startsWith("-"));
-//console.log(commandArgs, commandFlags, commandPaths);
+//console.debug(commandArgs, commandFlags, commandPaths);
 
 const { die } = require("./func");
 
@@ -46,17 +46,19 @@ if (commandFlags.find((str) => str === "--list" || str === "-L")) {
             "    add --server=<name> to select the server",
             "    e.g. uploadimg test.png --server=smms",
             "",
-            "kieng    equal to kieng.jd",
             "smms",
             "vgy",
             "uploadcc",
             "imgkr",
+            "kuibu",
+            "yujian",
             "kieng.[jd|sg|c58|wy|hl|tt|qq|kequ|sh]",
         ]
     );
 }
 
 let caseSensitiveMatch = true; // defaultValue
+
 (() => {
     let flag = commandFlags.find((str) => str.startsWith("--sen="));
     if (flag) {
@@ -78,7 +80,7 @@ if (commandPaths.length === 0) {
     showHelp();
 }
 
-const filePaths = fg.sync(commandPaths, {
+let filePaths = fg.sync(commandPaths, {
     onlyFiles: true,
     unique: true,
     absolute: true,
@@ -86,37 +88,43 @@ const filePaths = fg.sync(commandPaths, {
     caseSensitiveMatch,
 });
 
-//console.log(filePaths);
-
 if (filePaths.length === 0) {
-    die("Upload Fail", "No matched File");
+    if (commandPaths.every((path) => fs.existsSync(path))) {
+        filePaths = commandPaths;
+    } else {
+        die("Upload Fail", "No matched File");
+    }
 }
 
+//console.debug(filePaths);
+
 /* 选择目标服务器 */
-let server = "kieng.jd"; // default value
+let server = "smms"; // default value
+let getRemoteURL = require("./smms");
 
 (() => {
-    let flag = commandFlags.find((str) => str.startsWith("--server="));
+    let flag;
+    flag = commandFlags.find((str) => str.startsWith("--server="));
     if (flag) server = flag.replace("--server=", "");
+    flag = commandFlags.find((str) => str.startsWith("--S="));
+    if (flag) server = flag.replace("--S=", "");
 })();
 
-let getRemoteURL = require("./kieng");
-
-if (server.startsWith("kieng.")) {
+if (["main", "func"].includes(server)) {
+    //exclude files
+    die("Server does not exists", server);
+} else if (server.includes(".")) {
+    let query = "";
+    [server, query] = server.split(".");
+    if (!fs.existsSync(__dirname + `/${server}.js`))
+        die("Server does not exists", server);
     getRemoteURL = async function (path, target) {
         try {
-            return await require("./kieng")(
-                path,
-                target,
-                server.replace("kieng.", "")
-            );
+            return await require(`./${server}`)(path, target, query);
         } catch (err) {
             throw err;
         }
     };
-} else if (["main", "func"].includes(server)) {
-    //exclude files
-    die("Server does not exists", server);
 } else if (fs.existsSync(__dirname + `/${server}.js`)) {
     getRemoteURL = require(`./${server}`);
 } else {

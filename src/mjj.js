@@ -1,17 +1,17 @@
 const { sendPost } = require("./func");
 
-// https://img.kuibu.net/
+// https://mjj.today/
 
 async function getRemoteURL(path, target) {
     const response = await sendPost(
-        "https://img.kuibu.net/upload/backblaze",
+        "https://mjj.today/functions/upload.php",
         "file",
         path,
         {
-            Referer: "https://img.kuibu.net/",
+            Referer: "https://mjj.today/",
         }
     );
-    if (!response.url) throw new Error(response.code);
+    if (!response.code) throw new Error(response);
     target.push(response.url);
     return response.url;
 }

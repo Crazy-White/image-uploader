@@ -27,6 +27,7 @@ async function sendPost(url, formName, localPath, headers = {}, cb) {
         }).catch((err) => console.error(err));
         if (resp.ok) {
             let data = await resp.text();
+            //console.debug(url,data);
             try {
                 data = JSON.parse(data);
             } catch {}

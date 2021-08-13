@@ -1,4 +1,5 @@
 const { sendPost } = require("./func");
+const token = "qk0WHwBx9NOcUWyMgqMo7o6YoMRAGHTX";
 
 // https://sm.ms
 
@@ -8,7 +9,7 @@ async function getRemoteURL(path, target) {
         "smfile",
         path,
         {
-            Authorization: "qk0WHwBx9NOcUWyMgqMo7o6YoMRAGHTX",
+            Authorization: token,
         }
     );
     if (!response.success) throw new Error(response.message);

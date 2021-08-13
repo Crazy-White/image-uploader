@@ -1,5 +1,7 @@
 const { sendPost } = require("./func");
 
+// https://upload.cc/
+
 async function getRemoteURL(path, target) {
     const response = await sendPost(
         "https://upload.cc/image_upload",
