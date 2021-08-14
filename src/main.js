@@ -1,5 +1,6 @@
 const fs = require("fs");
 const fg = require("fast-glob");
+const { die } = require("./func");
 
 /* 解析命令行参数 */
 const commandArgs = process.argv.slice(2);
@@ -7,30 +8,27 @@ const commandFlags = commandArgs.filter((str) => str.startsWith("-"));
 const commandPaths = commandArgs.filter((str) => !str.startsWith("-"));
 //console.debug(commandArgs, commandFlags, commandPaths);
 
-const { die } = require("./func");
-
 function showHelp(help) {
     if (commandPaths.length === 0) {
         die(
             "Usage: uploadimg [options...] <path>",
-            ...[
-                "    --list               show servers avaliable",
-                "    --server=<server>    select server",
-                "    --sen=[true|false]   whether enables a case-sensitive mode for matching files",
-                help
-                    ? "" +
+            "    --list             -L  show servers avaliable",
+            "    --server=<server>  -S  select server",
+            "    --sen=[true|false]     whether enables a case-sensitive mode for matching files",
+            help
+                ? "" +
                       "\ne.g. uploadimg test.png --server=smms" +
                       "\ne.g. uploadimg --server=smms ./test.png" +
                       "\ne.g. uploadimg 1.jpg 2.jpg [3.jpg] [4.jpg] [...]" +
                       "\ne.g. uploadimg id-*.jpg --sen=false" +
                       "\n execute 'uploadimg --list' to check servers avaliable"
-                    : "    --help               show help",
-            ]
+                : "    --help             -H  show help"
         );
     } else {
         die("Upload fail", "Please check your command");
     }
 }
+
 if (commandArgs.length === 0) {
     showHelp();
 }
@@ -42,18 +40,16 @@ if (commandFlags.find((str) => str === "--help" || str === "-H")) {
 if (commandFlags.find((str) => str === "--list" || str === "-L")) {
     die(
         "Servers",
-        ...[
-            "    add --server=<name> to select the server",
-            "    e.g. uploadimg test.png --server=smms",
-            "",
-            "smms",
-            "vgy",
-            "uploadcc",
-            "imgkr",
-            "kuibu",
-            "yujian",
-            "kieng.[jd|sg|c58|wy|hl|tt|qq|kequ|sh]",
-        ]
+        "    add --server=<name> to select the server",
+        "    e.g. uploadimg test.png --server=smms",
+        "",
+        "smms",
+        "vgy",
+        "uploadcc",
+        "imgkr",
+        "kuibu",
+        "yujian",
+        "kieng.[jd|sg|c58|wy|hl|tt|qq|kequ|sh]"
     );
 }
 
@@ -106,8 +102,8 @@ let getRemoteURL = require("./smms");
     let flag;
     flag = commandFlags.find((str) => str.startsWith("--server="));
     if (flag) server = flag.replace("--server=", "");
-    flag = commandFlags.find((str) => str.startsWith("--S="));
-    if (flag) server = flag.replace("--S=", "");
+    flag = commandFlags.find((str) => str.startsWith("-S="));
+    if (flag) server = flag.replace("-S=", "");
 })();
 
 if (["main", "func"].includes(server)) {

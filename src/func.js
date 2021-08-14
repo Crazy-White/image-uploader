@@ -14,8 +14,16 @@ function checkPlatform() {
     else return 0;
 }
 
+    /**
+     * @function sendPost - 发送POST请求
+     * @param {String} url - fetch(url)
+     * @param {String} formName - 要发送的文件的formName
+     * @param {String} localPath - 本地路径
+     * @param {Object} headers - 额外的headers，按需求添加
+     * @param {Function} cb - 回调函数，回调的参数是FormData对象，按需求修改
+     * @return {String|Object} -如果返回值是json就解析，否则原样返回string
+     */
 async function sendPost(url, formName, localPath, headers = {}, cb) {
-    // 模拟POST请求
     try {
         const body = new FormData();
         body.append(formName, fs.createReadStream(localPath));
