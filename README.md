@@ -43,7 +43,7 @@ npm install upload-my-image --save
 _glob is not supported_
 
 ```js
-const getRemoteURL = require("upload-my-image/module");
+const getRemoteURL = require("upload-my-image");
 (async () => {
     let url = await getRemoteURL("./wallpaper.jpg", "smms");
     console.log(url);

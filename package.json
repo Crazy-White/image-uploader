@@ -3,10 +3,10 @@
   "version": "0.2.0",
   "main": "index.js",
   "scripts": {
-    "test": "node index.js"
+    "test": "node cli.js"
   },
   "bin": {
-    "uploadimg": "./index.js"
+    "uploadimg": "./cli.js"
   },
   "author": "CrazyWhite",
   "license": "ISC",
