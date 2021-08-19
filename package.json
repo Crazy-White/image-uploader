@@ -24,5 +24,6 @@
     "url": "https://github.com/Crazy-White/upload-my-image/issues"
   },
   "homepage": "https://github.com/Crazy-White/upload-my-image#readme",
-  "description": "upload my local image(s) to the internet!"
+  "description": "upload my local image(s) to the internet!",
+  "keywords": ["upload"]
 }

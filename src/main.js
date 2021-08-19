@@ -42,6 +42,7 @@ if (commandFlags.find((str) => str === "--list" || str === "-L")) {
         "Servers",
         "    add --server=<name> to select the server",
         "    e.g. uploadimg test.png --server=smms",
+        "    e.g. uploadimg test.png -S=kieng.jd",
         "",
         "smms",
         "vgy",

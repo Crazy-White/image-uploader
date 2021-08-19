@@ -1,10 +1,10 @@
-# How To Add Another Server
+## How To Add Another Server
 
-create a file named [serverName].js in this folder
-e.g. myOwnServer.js
-then write an async function(or Promise), the function receives 2 args
-the first one is the local path of an image (String)
-the second one is an array whitch needs you to push the remote path
+create a file named `[serverName].js` in this folder  
+e.g `myOwnServer.js`  
+then write an async function(or Promise), the function receives 2 arguments  
+the first one is the local path of an image (String)  
+the second one is an array which needs you to push the remote path  
 Your `myOwnServer.js` should like this
 
 ```js
