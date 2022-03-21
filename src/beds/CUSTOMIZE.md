@@ -21,7 +21,7 @@ if you command `npx uploadimg ./test.jpg -S=myOwnServer.query`
 you can get the String 'query' here
 
 ```js
-export default async function (localPath, receiver, query) {
+export default async function (localPath, query) {
     // here query === 'query'
 }
 ```

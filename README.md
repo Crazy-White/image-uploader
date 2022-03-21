@@ -52,4 +52,4 @@ import getRemoteURL from "upload-my-image/beds/smms.js";
 
 ## Other
 
-[costomize](./tree/master/src/beds/CUSTOMIZE.md)
+[costomize](./src/beds/CUSTOMIZE.md)
