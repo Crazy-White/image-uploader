@@ -1,8 +1,8 @@
-const { sendPost } = require("./func");
+import { sendPost } from "../utils.js";
 
 // https://catbox.moe/
 
-async function getRemoteURL(path, target) {
+export default async function (path) {
     const response = await sendPost(
         "https://catbox.moe/user/api.php",
         "fileToUpload",
@@ -13,8 +13,5 @@ async function getRemoteURL(path, target) {
         (form) => form.append("reqtype", "fileupload")
     );
     if (!response) throw new Error(response);
-    target.push(response);
     return response;
 }
-
-module.exports = getRemoteURL;

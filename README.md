@@ -8,7 +8,7 @@ A cli tool which could run with `Typora`
 ## Installation
 
 ```sh
-npm install upload-my-image -g
+$ npm install upload-my-image -g
 ```
 
 ## Usage
@@ -17,7 +17,7 @@ npm install upload-my-image -g
 uploadimg [options...] <path>
     --list             -L  show servers avaliable
     --server=<server>  -S  select server
-    --sen=[true|false]     whether enables a case-sensitive mode for matching files
+    --sen=[true|false]     whether enables a case-sensitive mode for matching files, default true
     --help             -H  show help
 ```
 
@@ -25,9 +25,10 @@ examples
 
 ```
 uploadimg ./wallpaper.png
-uploadimg wallpaper.png --server=smms
-uploadimg a.png b.png c.png
-uploadimg ./*.jpg ./*.png
+uploadimg wallpaper.png --server=smms    # use selected server
+uploadimg a.png b.png c.png              # upload multiple images
+uploadimg ./*.jpg ./*.png                # use system glob, windows cmd is not supported
+uploadimg "./*.jpg"                      # use fast-glob, support all system
 ```
 
 ## Use it with `Typora`
@@ -37,19 +38,18 @@ after installation, input `uploadimg` or `uploadimg --server=<serverName>` in Ty
 ## Use it with `Node.js`
 
 ```sh
-npm install upload-my-image --save
+$ npm install upload-my-image --save
 ```
 
-_glob is not supported_
+_glob is not supported here_
 
 ```js
-const getRemoteURL = require("upload-my-image");
+import getRemoteURL from "upload-my-image/beds/smms.js";
 (async () => {
-    let url = await getRemoteURL("./wallpaper.jpg", "smms");
-    console.log(url);
+    console.log(await getRemoteURL("./wallpaper.jpg"));
 })();
 ```
 
 ## Other
 
-[costomize](./CUSTOMIZE.md)
+[costomize](./tree/master/src/beds/CUSTOMIZE.md)

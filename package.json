@@ -1,29 +1,28 @@
 {
   "name": "upload-my-image",
   "version": "0.2.1",
-  "main": "index.js",
+  "main": "cli.js",
+  "type": "module",
   "scripts": {
     "test": "node cli.js"
   },
   "bin": {
     "uploadimg": "./cli.js"
   },
-  "author": "CrazyWhite",
+  "author": "YieldRay",
   "license": "ISC",
   "dependencies": {
-    "fast-glob": "^3.2.7",
-    "form-data": "^4.0.0",
-    "node-fetch": "^2.6.1"
+    "fast-glob": "^3.2.11",
+    "node-fetch": "^3.2.3"
   },
-  "devDependencies": {},
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Crazy-White/upload-my-image.git"
+    "url": "git+https://github.com/YieldRay/upload-my-image.git"
   },
   "bugs": {
-    "url": "https://github.com/Crazy-White/upload-my-image/issues"
+    "url": "https://github.com/YieldRay/upload-my-image/issues"
   },
-  "homepage": "https://github.com/Crazy-White/upload-my-image#readme",
+  "homepage": "https://github.com/YieldRay/upload-my-image#readme",
   "description": "upload my local image(s) to the internet!",
   "keywords": [
     "upload"

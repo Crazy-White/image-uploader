@@ -1,6 +1,5 @@
-const fs = require("fs");
-const fg = require("fast-glob");
-const { die } = require("./func");
+import fg from "fast-glob";
+import { die, isFileExists } from "./utils.js";
 
 /* 解析命令行参数 */
 const commandArgs = process.argv.slice(2);
@@ -9,19 +8,22 @@ const commandPaths = commandArgs.filter((str) => !str.startsWith("-"));
 //console.debug(commandArgs, commandFlags, commandPaths);
 
 function showHelp(help) {
+    const helpInfo = `
+uploadimg ./wallpaper.png
+uploadimg wallpaper.png --server=smms    # use selected server
+uploadimg wallpaper.png -S=vgy
+uploadimg a.png b.png c.png              # upload multiple images
+uploadimg ./*.jpg ./*.png                # use system glob, windows cmd is not supported
+uploadimg "./*.jpg"                      # use fast-glob, support all system
+`;
     if (commandPaths.length === 0) {
         die(
             "Usage: uploadimg [options...] <path>",
             "    --list             -L  show servers avaliable",
             "    --server=<server>  -S  select server",
-            "    --sen=[true|false]     whether enables a case-sensitive mode for matching files",
+            "    --sen=[true|false]     whether enables a case-sensitive mode for matching files, default true",
             help
-                ? "" +
-                      "\ne.g. uploadimg test.png --server=smms" +
-                      "\ne.g. uploadimg --server=smms ./test.png" +
-                      "\ne.g. uploadimg 1.jpg 2.jpg [3.jpg] [4.jpg] [...]" +
-                      "\ne.g. uploadimg id-*.jpg --sen=false" +
-                      "\n execute 'uploadimg --list' to check servers avaliable"
+                ? helpInfo + "\nexecute 'uploadimg --list' to check servers avaliable"
                 : "    --help             -H  show help"
         );
     } else {
@@ -42,19 +44,19 @@ if (commandFlags.find((str) => str === "--list" || str === "-L")) {
         "Servers",
         "    add --server=<name> to select the server",
         "    e.g. uploadimg test.png --server=smms",
-        "    e.g. uploadimg test.png -S=kieng.jd",
-        "",
+        "    e.g. uploadimg test.png -S=vgy",
+        "    e.g. uploadimg test.png -S=yujian.bilibili",
+        "\nServers avaliable:",
         "smms",
         "vgy",
         "uploadcc",
         "imgkr",
         "kuibu",
-        "yujian",
-        "kieng.[jd|sg|c58|wy|hl|tt|qq|kequ|sh]"
+        "yujian"
     );
 }
 
-let caseSensitiveMatch = true; // defaultValue
+let caseSensitiveMatch = true; // 大小写敏感
 
 (() => {
     let flag = commandFlags.find((str) => str.startsWith("--sen="));
@@ -86,18 +88,15 @@ let filePaths = fg.sync(commandPaths, {
 });
 
 if (filePaths.length === 0) {
-    if (commandPaths.every((path) => fs.existsSync(path))) {
-        filePaths = commandPaths;
-    } else {
-        die("Upload Fail", "No matched File");
-    }
+    die("Upload Fail", "No matched File");
 }
 
-//console.debug(filePaths);
-
 /* 选择目标服务器 */
-let server = "smms"; // default value
-let getRemoteURL = require("./smms");
+let server = "smms",
+    query = "";
+if (server.includes(".")) {
+    [server, query] = server.split(".");
+}
 
 (() => {
     let flag;
@@ -107,34 +106,24 @@ let getRemoteURL = require("./smms");
     if (flag) server = flag.replace("-S=", "");
 })();
 
-if (["main", "func"].includes(server)) {
-    //exclude files
-    die("Server does not exists", server);
-} else if (server.includes(".")) {
-    let query = "";
-    [server, query] = server.split(".");
-    if (!fs.existsSync(__dirname + `/${server}.js`))
-        die("Server does not exists", server);
-    getRemoteURL = async function (path, target) {
-        try {
-            return await require(`./${server}`)(path, target, query);
-        } catch (err) {
-            throw err;
-        }
-    };
-} else if (fs.existsSync(__dirname + `/${server}.js`)) {
-    getRemoteURL = require(`./${server}`);
-} else {
-    //default
+const modulePath = new URL(`./beds/${server}.js`, import.meta.url);
+
+if (!(await isFileExists(modulePath))) {
     die("Server does not exists", server);
 }
+const { default: getResponseURL } = await import(modulePath);
 
 /* 发送请求 */
-const remoteURLs = [];
-Promise.all(filePaths.map((path) => getRemoteURL(path, remoteURLs)))
-    .then(() => {
-        die("Upload Success", ...remoteURLs);
-    })
-    .catch((err) => {
-        die("Upload Fail", err);
-    });
+
+try {
+    const responseURLs = [];
+    for (let filePath of filePaths) {
+        const responseURL = await getResponseURL(filePath, query);
+        responseURLs.push(responseURL);
+    }
+    die("Upload Success", ...responseURLs);
+} catch (err) {
+    die("Upload Fail", err);
+}
+
+// --server=bed.query filename
