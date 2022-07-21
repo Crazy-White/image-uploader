@@ -15,9 +15,9 @@ $ npm install upload-my-image -g
 
 ```
 uploadimg [options...] <path>
-    --list             -L  show servers avaliable
+    --list             -L  show all avaliable servers
     --server=<server>  -S  select server
-    --sen=[true|false]     whether enables a case-sensitive mode for matching files, default true
+    --sen=<true|false>     whether enables a case-sensitive mode for matching files, default true
     --help             -H  show help
 ```
 

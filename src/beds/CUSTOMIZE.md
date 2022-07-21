@@ -18,7 +18,7 @@ export default async function (localImagePath, query = "") {
 after you save your file you can command `npx uploadimg ./test.jpg -S=myOwnServer` to use it!
 
 if you command `npx uploadimg ./test.jpg -S=myOwnServer.query`
-you can get the String 'query' here
+you can get the String 'query' here, as the second param
 
 ```js
 export default async function (localPath, query) {

@@ -7,6 +7,6 @@ const TOKEN = "562cbd50f59dcc06751de6863ce7adc5";
 
 export default async function (path, type = "bilibili") {
     const response = await sendPost(`https://www.hualigs.cn/api/upload?apiType=${type}&token=${TOKEN}`, "image", path);
-    if (response.code !== 200) throw new Error(response);
+    if (response.code !== 200) throw new Error(response.msg);
     return response.data.url[type];
 }

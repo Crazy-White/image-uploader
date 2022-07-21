@@ -18,6 +18,7 @@ const isFileExists = async (filePath) =>
     await stat(filePath)
         .then((stat) => stat.isFile())
         .catch((_) => false);
+
 /**
  * @function sendPost - 发送POST请求
  * @param {String} url - fetch(url)
@@ -25,7 +26,7 @@ const isFileExists = async (filePath) =>
  * @param {String} localPath - 本地路径
  * @param {Object} headers - 额外的headers，按需求添加
  * @param {Function} cb - 回调函数，回调的参数是FormData对象，按需求修改
- * @return {String|Object} -如果返回值是json就解析，否则原样返回string
+ * @return {String|Object} -如果返回值是json就返回解码的json对象，否则原样返回string
  */
 async function sendPost(url, formName, localPath, headers = {}, cb) {
     try {

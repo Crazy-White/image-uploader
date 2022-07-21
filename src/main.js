@@ -19,7 +19,7 @@ uploadimg "./*.jpg"                      # use fast-glob, support all system
     if (commandPaths.length === 0) {
         die(
             "Usage: uploadimg [options...] <path>",
-            "    --list             -L  show servers avaliable",
+            "    --list             -L  show all avaliable servers",
             "    --server=<server>  -S  select server",
             "    --sen=[true|false]     whether enables a case-sensitive mode for matching files, default true",
             help
@@ -93,9 +93,10 @@ if (filePaths.length === 0) {
 
 /* 选择目标服务器 */
 let server = "smms",
-    query = "";
+    query = undefined;
 if (server.includes(".")) {
     [server, query] = server.split(".");
+    if (typeof query === "string" && query.length === 0) query = undefined;
 }
 
 (() => {

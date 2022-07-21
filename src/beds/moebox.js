@@ -12,6 +12,6 @@ export default async function (path) {
         },
         (form) => form.append("reqtype", "fileupload")
     );
-    if (!response) throw new Error(response);
+    if (typeof response !== "string") throw new Error(response);
     return response;
 }
